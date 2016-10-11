@@ -20,5 +20,5 @@ int main(int argc, char** argv){
   nfaToDfa.findAlphabet();
   nfaToDfa.findTransitions();
   nfaToDfa.assignEverything();
- 
+  nfaToDfa.readyGo();
 }

@@ -19,7 +19,9 @@ class Converter{
   std::vector< std::string > finalStates;
   std::vector< std::string > nextSteps;
   std::vector< int > intFinalStates;
-  std::vector< std::vector < int > > intNextSteps;
+  std::vector< int > intNextSteps;
+  std::vector< std::vector< int > > dfaStates;
+  std::vector< int > dfaSteps;
   std::vector< std::vector < int > > intEpsilonSteps;
   int alphabetSize;
   int dfaStateCount;
@@ -36,7 +38,10 @@ class Converter{
   void findNumberOfStates();
   void findAlphabet();
   void assignEverything();
-
+  void readyGo();
+  void mark(std::vector<int>,int);
+  void pV(std::vector<int>);
+  std::vector<int> eClose(std::vector<int> &,int);
 };
 
 #include "converter.cpp"
