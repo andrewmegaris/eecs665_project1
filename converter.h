@@ -15,30 +15,28 @@ FILE: CONVERTER.H
 class Converter{
   public:
   int initialState;
-  std::vector< int > finalStates;
-  std::vector< std::vector< std::string > > nextStates;
-  std::vector< std::vector< int > > nextSteps;
-  std::vector< std::vector< int > > epsilon;
-  int totalStates;
-  int tableSize;
+  int statesNum;
+  std::vector< std::string > finalStates;
+  std::vector< std::string > nextSteps;
+  std::vector< int > intFinalStates;
+  std::vector< std::vector < int > > intNextSteps;
+  std::vector< std::vector < int > > intEpsilonSteps;
   int alphabetSize;
   int dfaStateCount;
-  std::string  inputArr;
+  std::vector< std::string >  inputVector;
   int  markCount;
-  std::string alphabet;
+  std::vector<char> alphabetVector;
 
   Converter();
   ~Converter();
   void findTransitions();
-  void loadArray();
+  void load();
   void findInitState();
   void findFinalStates();
   void findNumberOfStates();
   void findAlphabet();
   void assignEverything();
-  void mark(int,std::vector<int>);
-  void markHelper(int,std::vector<int>);
-  void printSet(std::vector<int>);
+
 };
 
 #include "converter.cpp"
