@@ -149,12 +149,6 @@ void Converter::assignEverything(){
   }
 }
 
-/*void Converter::eClosure(int inputState[]){
-int index = 0;
-if()
-while(epsilon[inputstate][index] != 0)
-}*/
-
 void Converter::mark(int markInt,int inputArray[]){
   //first build the set. 
   int index = 0;
@@ -177,7 +171,7 @@ void Converter::mark(int markInt,int inputArray[]){
     }
   }
 }
-void Converter::markHelper(int letter,int inputArray[]){
+void Converter::markHelper(int letter,std::vector<int> inputArray){
   printSet(inputArray);
   std::cout << "--" << alphabet[letter] << "-->";
 }

@@ -20,7 +20,10 @@ int main(int argc, char** argv){
   nfaToDfa.findAlphabet();
   nfaToDfa.findTransitions();
   nfaToDfa.assignEverything();
-  int x[] = {2,3,4,5,88,44,321,6,7,8};
+  std::vector<int> x;
+  x.pushBack(10);
+  x.pushBack(11);
+  x.pushback(100);
   nfaToDfa.markHelper(2,x);
   std::cout << std::endl <<nfaToDfa.epsilon[1][0];
 }
