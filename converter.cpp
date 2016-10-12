@@ -266,35 +266,34 @@ void Converter::mark(std::vector<int> inputV,int marker){
   std::vector<int> flagVector;
   bool endState;
   bool insert;
+  bool emptyStep;
   int flag;
   for(int x = 0; x < inputV.size(); x++){
     startState.push_back(inputV[x]);
-    std::cout << "pushing: " << inputV[x] << std::endl;
   }
   int pullLocation;
   std::cout << "Mark " << marker << std::endl;
-  for(int x = 0; x < inputV.size(); x++){
-    for(int y = 0; y < alphabetSize - 1; y++){
+  for(int y = 0; y < alphabetSize - 1; y++){
+    emptyStep = true;
+    for(int x = 0; x < inputV.size(); x++){
       if(inputV[x] == 1)
         pullLocation = 0;
       else
         pullLocation = (inputV[x] * (alphabetSize -1)) - (alphabetSize -1);
 
       pullLocation += y;
-      std::cout << "PL: " << pullLocation << std::endl;
-      std::cout << "NextSteps: " << intNextSteps[pullLocation] << std::endl;
       if(intNextSteps[pullLocation] != 0){
         flagVector.push_back(intNextSteps[pullLocation]);
+        emptyStep = false;
       }
-
     }
+    if(emptyStep)
+      flagVector.push_back(0);
   } 
 
-  std::cout <<"flag into loop: " <<flagVector[0] << " " << flagVector[1] << std::endl;;
   for(int x = 0; x < alphabetSize -1; x++){
  
     if(flagVector[x] < (statesNum * (alphabetSize -1) )&& flagVector[x] != 0){
-      std::cout << flagVector[x] << " ";
       endState = true;
       pV(inputV);
       std::cout << "--" << alphabetVector[x] << "--> {";
