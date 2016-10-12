@@ -21,4 +21,5 @@ int main(int argc, char** argv){
   nfaToDfa.findTransitions();
   nfaToDfa.assignEverything();
   nfaToDfa.readyGo();
+  nfaToDfa.wrapItUp();
 }

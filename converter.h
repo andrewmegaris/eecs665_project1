@@ -15,7 +15,9 @@ FILE: CONVERTER.H
 class Converter{
   public:
   int initialState;
+  int dfaFinalStates;
   int statesNum;
+  std::vector< int > dfaFinalVector;
   std::vector< std::string > finalStates;
   std::vector< std::string > nextSteps;
   std::vector< int > intFinalStates;
@@ -24,10 +26,8 @@ class Converter{
   std::vector< int > dfaSteps;
   std::vector< std::vector < int > > intEpsilonSteps;
   int alphabetSize;
-  int dfaStateCount;
   std::vector< std::string >  inputVector;
-  int  markCount;
-  std::vector<char> alphabetVector;
+  std::vector< char > alphabetVector;
 
   Converter();
   ~Converter();
@@ -42,6 +42,8 @@ class Converter{
   void mark(std::vector<int>,int);
   void pV(std::vector<int>);
   std::vector<int> eClose(std::vector<int> &,int);
+  void wrapItUp();
+  void findDfaStartFinal();
 };
 
 #include "converter.cpp"

@@ -11,7 +11,7 @@ FILE: CONVERTER.CPP
 #include <algorithm>
 #include <sstream>
 //Default Constructor
-Converter::Converter() :alphabetSize(1),dfaStateCount(0),markCount(0){}
+Converter::Converter(){}
 
 Converter::~Converter(){}
 
@@ -28,7 +28,6 @@ void Converter::load(){
   while(std::getline(inputFile,line)){
     inputVector.push_back(line);
   }
-  //totalStates = inputVector.size() - 4;
 }
 
 //finds the intitial state from first line
@@ -233,10 +232,10 @@ void Converter::readyGo(){
   dfaStates.push_back(startState);
   std::cout << "E-closure(IO) = ";
 
-  pV(startState);
+  pV(dfaStates[0]);
 
   std::cout << " = 1" << std::endl;  
-  mark(startState,1);
+  mark(dfaStates[0],1);
 }
 
 
@@ -265,6 +264,13 @@ std::vector<int> Converter::eClose(std::vector<int> &inputVector,int marker){
 void Converter::mark(std::vector<int> inputV,int marker){
   std::vector<int> startState;
   std::vector<int> flagVector;
+  bool endState;
+  bool insert;
+  int flag;
+  for(int x = 0; x < inputV.size(); x++){
+    startState.push_back(inputV[x]);
+    std::cout << "pushing: " << inputV[x] << std::endl;
+  }
   int pullLocation;
   std::cout << "Mark " << marker << std::endl;
   for(int x = 0; x < inputV.size(); x++){
@@ -272,18 +278,25 @@ void Converter::mark(std::vector<int> inputV,int marker){
       if(inputV[x] == 1)
         pullLocation = 0;
       else
-        pullLocation = (inputV[x] * 2) - 2;
+        pullLocation = (inputV[x] * (alphabetSize -1)) - (alphabetSize -1);
 
       pullLocation += y;
+      std::cout << "PL: " << pullLocation << std::endl;
+      std::cout << "NextSteps: " << intNextSteps[pullLocation] << std::endl;
       if(intNextSteps[pullLocation] != 0){
         flagVector.push_back(intNextSteps[pullLocation]);
       }
+
     }
-  }
+  } 
+
+  std::cout <<"flag into loop: " <<flagVector[0] << " " << flagVector[1] << std::endl;;
   for(int x = 0; x < alphabetSize -1; x++){
-    if(flagVector[x] < statesNum){
+ 
+    if(flagVector[x] < (statesNum * (alphabetSize -1) )&& flagVector[x] != 0){
+      std::cout << flagVector[x] << " ";
+      endState = true;
       pV(inputV);
-      //dfaStates.push_back(flagVector[x]);
       std::cout << "--" << alphabetVector[x] << "--> {";
       std::cout << flagVector[x] << "}" << std::endl;
       std::cout << "E-Closure {" << flagVector[x] << "} = ";
@@ -291,12 +304,122 @@ void Converter::mark(std::vector<int> inputV,int marker){
       tempVector.push_back(flagVector[x]);
       tempVector = eClose(tempVector,0);
       pV(tempVector);
+      
+      // TEST///
+/*      insert = false;
+      //check every entry in dfa state table
+      for(int a = 0; a < dfaStates.size(); a++){
+      //compare each individual entry
+        if(tempVector.size() == dfaStates[a].size()){
+          for(int b = 0; b < dfaStates[a].size();b++){
+            if(tempVector[b] != dfaStates[a][b]){
+              insert = true;
+            }
+            else{
+              insert = false;              
+            }
+          }
+        }
+        else
+          insert = true;
+        //if(!insert)
+        //flag = a;
+      }
+      if(insert){
       dfaStates.push_back(tempVector);
       std::cout << " = " <<  dfaStates.size() << std::endl;
+      dfaSteps.push_back(dfaStates.size());
+      }
+      else{
+        std::cout << " = " << flag << std::endl;
+        dfaSteps.push_back(flag);
+      }*/
+      // END TEST //
+      // SORTA WORKS NEED TO IMPROVE//
+      dfaStates.push_back(tempVector);
+      dfaSteps.push_back(dfaStates.size());
+      std::cout << " = " <<  dfaStates.size() << std::endl;
+      //END SORTA WORKS //
+      if(tempVector.size() == startState.size()){
+        for(int z = 0; z < tempVector.size(); z++){
+          if(tempVector[z] != startState[z])
+            endState = false;
+        }
+      }
+      else 
+        endState = false;
+    }
+    else{
+      dfaSteps.push_back(0);
+    }
+
+  }
+  if(!endState){
+    marker++;
+    std::cout << std::endl;
+    mark(dfaStates[marker-1],marker);
+  }
+  if(endState)
+    dfaFinalStates = marker;
+}
+
+void Converter::wrapItUp(){
+  int pullLocation;
+  findDfaStartFinal();
+  std::cout << "State     ";
+  for(int z = 0; z < alphabetSize -1;z++){
+    std::cout<<alphabetVector[z] << "     ";
+  }
+  std::cout<<std::endl;
+  for(int x = 0; x < dfaStates.size(); x++){
+    std::cout << x + 1 << "        {"; 
+    for(int y = 0; y < alphabetSize -1; y++){
+      pullLocation = (x * (alphabetSize -1)) + y;
+
+      if(dfaSteps[pullLocation] == 0){
+       std::cout << " }";
+
+      }
+      else{
+       std::cout << dfaSteps[pullLocation] << "}";
+      }
+      if(y != alphabetSize - 2){
+        std::cout << "   {"; 
+      }
+      else{
+        std::cout << std::endl;
+      }
     }
   }
 }
 
+void Converter::findDfaStartFinal(){
+bool insert;
+  for(int x = 0; x < dfaStates.size(); x++){
+    for(int y = 0; y < dfaStates[x].size(); y++){
+      if(initialState == dfaStates[x][y])
+        initialState = x+1;
+      for(int z = 0; z < dfaStates[dfaFinalStates].size(); z++){
+        if(dfaStates[x].size() == dfaStates[dfaFinalStates].size())
+          if(dfaStates[x][y] == dfaStates[dfaFinalStates][z])
+            insert = true;
+          for(int q = 0; q < dfaFinalVector.size(); q++){
+              if(x - 1 == dfaFinalVector[q])
+                insert = false;
+              else
+                insert = true;
+            }
+          if(insert)
+            dfaFinalVector.push_back(x - 1);
+      }
+    }
+  }
+  std::cout << "Start State: {" << initialState <<"}" << std::endl;
+
+  std::cout << "Final States: ";
+  pV(dfaFinalVector);
+  std::cout << std::endl;
+}
 
 //Just a helper function for printing out all the elements in a 1d vector
 void Converter::pV(std::vector<int> iV){
